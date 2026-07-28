@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // \"\"' | grep -qE '(^|/)\\.env($|\\.)' && { echo 'Geblokkeerd: .env bevat secrets en hoort niet in de repo.' >&2; exit 2; } || exit 0"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // \"\"' | grep -qE '\\.tsx?$' && pnpm typecheck 2>&1 | head -20 || exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}
