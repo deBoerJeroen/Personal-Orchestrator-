@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * De echte sessiecontrole gebeurt server-side in `requireUser()`; dit is de
  * goedkope eerste zeef zodat een uitgelogde bezoeker nooit een pagina ziet.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const hasSession = request.cookies.getAll().some((c) => c.name.startsWith("nu.session"));
 
   if (!hasSession) {

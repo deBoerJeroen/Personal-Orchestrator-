@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { resetUserData } from "./reset";
 
 /**
  * De drie kritieke flows. Meer e2e-tests dan dit willen we niet: ze zijn traag
@@ -12,6 +13,10 @@ const EMAIL = process.env.E2E_EMAIL ?? "";
 const PASSWORD = process.env.E2E_PASSWORD ?? "";
 
 test.skip(!EMAIL || !PASSWORD, "E2E_EMAIL en E2E_PASSWORD ontbreken");
+
+test.beforeEach(async () => {
+  await resetUserData();
+});
 
 async function login(page: Page) {
   await page.goto("/login");
@@ -45,7 +50,8 @@ test("A+B: vastleggen, verwerken tot één actie en afvinken", async ({ page }) 
   await page.getByLabel("Wat is de eerstvolgende fysieke actie?").fill(titel);
   await page.getByRole("button", { name: "Verder" }).click();
   await page.getByRole("button", { name: "Nee", exact: true }).click();
-  await page.getByRole("button", { name: "Privé" }).click();
+  // Scoped op main: de modusschakelaar in de header heeft dezelfde labels.
+  await page.getByRole("main").getByRole("button", { name: "Privé" }).click();
 
   await expect(page.getByText("Inbox leeg.")).toBeVisible();
 
@@ -67,7 +73,7 @@ test("C: een vage taak wordt een project met een concrete eerstvolgende actie", 
   await page.getByRole("button", { name: "Ja", exact: true }).click();
 
   // De app herkent dat dit meer dan één stap is en zegt dat als suggestie.
-  await expect(page.getByText(/meer dan één stap/i)).toBeVisible();
+  await expect(page.getByText(/^Dit klinkt als meer dan één stap/)).toBeVisible();
   await page.getByRole("button", { name: "Ja", exact: true }).click();
 
   await page
@@ -75,10 +81,13 @@ test("C: een vage taak wordt een project met een concrete eerstvolgende actie", 
     .fill("Open de presentatie en schrijf de drie kernboodschappen");
   await page.getByRole("button", { name: "Verder" }).click();
   await page.getByRole("button", { name: "Nee", exact: true }).click();
-  await page.getByRole("button", { name: "Werk" }).click();
+  await page.getByRole("main").getByRole("button", { name: "Werk" }).click();
 
   await page.getByRole("link", { name: "Overzicht" }).click();
   await expect(page.getByText("Teampresentatie klaar en gedeeld")).toBeVisible();
+
+  // Acties staan dichtgeklapt: het overzicht toont standaard alleen projecten.
+  await page.getByRole("group").filter({ hasText: "Acties" }).getByText("Acties").click();
   await expect(page.getByText("Open de presentatie en schrijf de drie kernboodschappen")).toBeVisible();
 });
 

@@ -13,9 +13,25 @@ export default defineConfig({
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:3000",
     trace: "on-first-retry",
+    // Normaal gesproken regelt `playwright install` de browser. In omgevingen
+    // waar er al een Chromium staat, wijs je die aan met PW_CHROMIUM_PATH.
+    launchOptions: process.env.PW_CHROMIUM_PATH
+      ? { executablePath: process.env.PW_CHROMIUM_PATH }
+      : {},
   },
   projects: [
-    { name: "mobiel", use: { ...devices["iPhone 14"] } },
+    {
+      // iPhone 14-formaat op Chromium: WebKit is niet overal beschikbaar en de
+      // schermmaat is wat we willen toetsen, niet de engine.
+      name: "mobiel",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 390, height: 664 },
+        deviceScaleFactor: 3,
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: process.env.E2E_BASE_URL

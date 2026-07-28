@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Op een telefoonformaat ligt de dev-indicator precies over de tabbalk.
+  devIndicators: false,
   // Alle gebruikersdata is persoonlijk: geen externe origins, geen third-party scripts.
   async headers() {
     return [

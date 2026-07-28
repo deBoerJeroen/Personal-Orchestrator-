@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path // \"\"' | grep -qE '(^|/)\\.env($|\\.)' && { echo 'Geblokkeerd: .env bevat secrets en hoort niet in de repo.' >&2; exit 2; } || exit 0"
+            "command": "f=$(jq -r '.tool_input.file_path // \"\"'); case \"$f\" in *.env.example) exit 0 ;; *.env|*.env.*) echo 'Geblokkeerd: .env bevat secrets en hoort niet in de repo. Alleen .env.example mag.' >&2; exit 2 ;; *) exit 0 ;; esac"
           }
         ]
       }

@@ -16,7 +16,10 @@ const name = process.env.SEED_USER_NAME ?? "Ik";
 
 async function main() {
   if (!email || !password) {
-    throw new Error("SEED_USER_EMAIL en SEED_USER_PASSWORD zijn verplicht. Zie .env.example.");
+    // Geen fout: bij een deploy waar het account al bestaat zijn deze
+    // variabelen niet nodig, en dan mag de build gewoon doorlopen.
+    console.log("SEED_USER_EMAIL/SEED_USER_PASSWORD niet gezet — overgeslagen.");
+    return;
   }
 
   let [existing] = await db.select().from(user).where(eq(user.email, email)).limit(1);

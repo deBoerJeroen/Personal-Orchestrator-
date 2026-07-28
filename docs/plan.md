@@ -626,7 +626,7 @@ geen logging van de inhoud.
 | Framework | **Next.js 16, App Router** | Server components + server actions betekent: geen aparte API-laag, geen client state library. Alternatief Remix/React Router is prima maar heeft geen voordeel; SvelteKit zou sneller zijn maar je ecosysteem en mijn ondersteuning zijn sterker in React |
 | UI | **Tailwind CSS v4 + een kleine set shadcn/ui-componenten** | shadcn is copy-in, geen runtime-dependency, en je kunt elk component simpeler maken. Geen MUI/Chakra: te veel gewicht en te veel opties |
 | Database | **Neon Postgres, regio Frankfurt** | Serverless Postgres, gratis tier ruim voldoende voor één gebruiker, branchen per PR, EU-opslag |
-| ORM | **Drizzle** | Geen query-engine binary, snelle koude start op serverless, migraties zijn leesbare SQL, en het schema is één TypeScript-bestand dat je in één blik overziet. Prisma is comfortabeler maar zwaarder en de generate-stap is extra frictie |
+| ORM | **Drizzle** + `pg` (node-postgres) | Geen query-engine binary, migraties zijn leesbare SQL, schema in één bestand. Eén standaarddriver werkt tegen Neon én tegen een lokale Postgres, wat lokaal ontwikkelen en e2e-tests mogelijk maakt. Op Neon de *pooled* connection string gebruiken |
 | Auth | **better-auth**, e-mail + wachtwoord | Draait in je eigen app, gebruikers in je eigen database, geen externe dienst, MIT. Auth.js kost extra werk voor e-mail/wachtwoord; Clerk zet je identiteitsdata bij een derde |
 | Validatie | Zod, gedeeld tussen server action en formulier | Eén schema, geen dubbele regels |
 | Datum/tijd | `date-fns` + `@date-fns/tz`, alles in `Europe/Amsterdam`, dag begint 04:00 | Voorkomt de klassieke "gemiste gewoonte om 00:30"-bug |
