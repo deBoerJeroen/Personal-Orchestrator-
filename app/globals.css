@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/*
+ * Rustige visuele taal: systeemfont, veel wit, één accentkleur, geen animatie
+ * behalve een korte bevestiging bij afvinken. Donkere modus volgt het systeem.
+ */
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --color-ink: oklch(0.21 0.01 250);
+  --color-muted: oklch(0.52 0.01 250);
+  --color-line: oklch(0.92 0.005 250);
+  --color-paper: oklch(0.99 0.002 250);
+  --color-accent: oklch(0.55 0.13 240);
+  --color-attention: oklch(0.65 0.15 60);
+}
+
+:root {
+  --paper: var(--color-paper);
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: oklch(0.18 0.008 250);
+    --ink: oklch(0.94 0.005 250);
+    --muted: oklch(0.65 0.01 250);
+    --line: oklch(0.28 0.008 250);
+    color-scheme: dark;
+  }
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  /* Mobiel is minstens zo belangrijk als desktop: grotere basistekst. */
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Elk tapdoel is minimaal 44px. Geen uitzonderingen. */
+button,
+a[role="button"],
+input[type="submit"] {
+  min-height: 44px;
+}
+
+@utility surface {
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+@keyframes confirm {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+
+.confirming {
+  animation: confirm 220ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirming {
+    animation: none;
+    opacity: 0.35;
+  }
+}
