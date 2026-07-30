@@ -23,37 +23,53 @@ Zie [`docs/not-now.md`](docs/not-now.md).
 
 # Online zetten — zonder terminal
 
-Drie gratis accounts, ongeveer twintig minuten. Je hoeft geen enkele
+Eén gratis account (Vercel), ongeveer een kwartier. Je hoeft geen enkele
 programmeeropdracht te typen: de app installeert zichzelf bij het uitrollen.
 
-## Stap 1 — Database aanmaken (Neon)
+## Waarom is er een database nodig?
 
-1. Ga naar **neon.com** en maak een gratis account.
-2. Maak een nieuw project. Kies bij regio **Europe (Frankfurt)** — je data blijft dan in de EU.
-3. Na het aanmaken zie je een **connection string**. Zorg dat het schuifje op **Pooled connection** staat: in de tekst moet `-pooler` voorkomen.
-4. Kopieer die hele tekst. Hij begint met `postgresql://`. Bewaar hem even in een kladblok.
+Vercel draait de code, maar bewaart niets: bij elke nieuwe versie begint de
+schijf leeg. Je acties, projecten en check-ins moeten dus ergens anders staan.
+Dat is de database.
 
-## Stap 2 — Drie waardes klaarleggen
+Je hoeft daar geen apart account voor te maken. Vercel levert Postgres
+(technisch: Neon) rechtstreeks vanuit zijn eigen dashboard, op hetzelfde
+gratis niveau en op één rekening.
 
-Je hebt straks vijf gegevens nodig. Zet ze even in datzelfde kladblok:
+## Stap 1 — Database aanmaken, vanuit Vercel
+
+1. Ga naar **vercel.com** en log in met je GitHub-account.
+2. Klik bovenin op **Storage** → **Create Database**.
+3. Kies **Neon (Serverless Postgres)**, het gratis plan, en als regio **Frankfurt** — je data blijft dan in de EU.
+4. Geef hem een naam en maak hem aan. Verder hoef je hier niets te doen: Vercel vult `DATABASE_URL` straks zelf in.
+
+## Stap 2 — Vier waardes klaarleggen
+
+Zet deze even in een kladblok:
 
 | Naam | Wat je invult |
 |---|---|
-| `DATABASE_URL` | De gekopieerde tekst uit stap 1 |
 | `BETTER_AUTH_SECRET` | Een willekeurige reeks van minstens 32 tekens. Ram op je toetsenbord. |
 | `SEED_USER_EMAIL` | Je eigen e-mailadres |
 | `SEED_USER_PASSWORD` | Het wachtwoord dat je straks gebruikt om in te loggen |
 | `SEED_USER_NAME` | Je voornaam |
 
-## Stap 3 — Uitrollen (Vercel)
+`DATABASE_URL` staat er bewust niet bij: die zet Vercel er zelf in zodra je de
+database aan het project koppelt.
 
-1. Ga naar **vercel.com** en log in met je GitHub-account.
-2. Klik **Add New → Project** en kies deze repository.
-3. Open **Environment Variables** en voeg de vijf regels uit stap 2 toe: links de naam, rechts de waarde.
-4. Klik **Deploy** en wacht een paar minuten.
+## Stap 3 — Uitrollen
 
-Tijdens het uitrollen maakt de app zelf de database-tabellen aan en zet hij
-jouw account klaar. Je hoeft daar niets voor te doen.
+1. Klik **Add New → Project** en kies deze repository.
+2. Open **Environment Variables** en voeg de vier regels uit stap 2 toe.
+3. Klik **Deploy**.
+
+Loopt deze eerste poging stuk op de database? Dan is de database nog niet aan
+het project gekoppeld. Ga naar **Storage**, kies je database, klik **Connect
+Project** en kies dit project. Daarna in **Deployments** bij de bovenste op de
+drie puntjes → **Redeploy**.
+
+Tijdens het uitrollen maakt de app zelf de tabellen aan en zet hij jouw account
+klaar. Je hoeft daar niets voor te doen.
 
 ## Stap 4 — Het adres vastleggen
 
@@ -78,9 +94,10 @@ beginscherm staat, en de app is gemaakt voor één hand op een telefoon.
 
 ## Als er iets misgaat
 
-**"Deployment failed" met iets over de database.** De `DATABASE_URL` klopt
-niet. Meestal is het de niet-pooled variant gekopieerd: controleer of er
-`-pooler` in staat.
+**"Deployment failed" met iets over de database.** De database is nog niet aan
+het project gekoppeld. Zie het slot van stap 3. Vulde je `DATABASE_URL` zelf in?
+Controleer dan of er `-pooler` in staat — de niet-pooled variant loopt vast
+zodra er meerdere verzoeken tegelijk binnenkomen.
 
 **Inloggen lukt niet.** Controleer of `BETTER_AUTH_URL` exact het adres van je
 app is, inclusief `https://` en zonder schuine streep aan het eind. Daarna
