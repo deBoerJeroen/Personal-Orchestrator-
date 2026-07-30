@@ -103,8 +103,16 @@ zodra er meerdere verzoeken tegelijk binnenkomen.
 app is, inclusief `https://` en zonder schuine streep aan het eind. Daarna
 opnieuw uitrollen.
 
-**Je wachtwoord vergeten.** Verander `SEED_USER_PASSWORD` niet — dat werkt niet
-voor een bestaand account. Vraag Claude Code om het wachtwoord te resetten.
+**Je wachtwoord vergeten of veranderen.** Dat kun je zelf, in drie stappen:
+
+1. Ga naar **Settings → Environment Variables** en zet `SEED_USER_PASSWORD` op het nieuwe wachtwoord.
+2. Voeg toe: `SEED_RESET_PASSWORD` met als waarde `true`.
+3. Ga naar **Deployments** → drie puntjes bij de bovenste → **Redeploy**.
+
+**Verwijder daarna `SEED_RESET_PASSWORD` weer**, en rol nog één keer uit.
+Blijft de vlag staan, dan wordt je wachtwoord bij elke volgende deploy
+teruggezet naar wat er in Vercel staat. Zonder die vlag raakt een deploy je
+wachtwoord nooit aan.
 
 ---
 
